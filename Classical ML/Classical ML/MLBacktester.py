@@ -3,7 +3,11 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 import matplotlib.pyplot as plt
+import fxcmpy
+from datetime import datetime
 plt.style.use("seaborn")
+
+col = ["tradeId", "amountK", "currency", "grossPL", "isBuy"]
 
 class MLBacktester():
     ''' Class for the vectorized backtesting of Machine Learning-based trading strategies (Classification).
@@ -133,3 +137,11 @@ class MLBacktester():
         else:
             title = "Logistic Regression: {} | TC = {}".format(self.symbol, self.tc)
             self.results[["creturns", "cstrategy"]].plot(title=title, figsize=(12, 8))
+            
+            
+            
+if __name__ == "__main__":
+    api = fxcmpy.fxcmpy(config_file='fxcm.cfg')
+    trader = ConTrader("EUR/USD", bar_length = "1min", window = 1, units = 100)
+    trader.get_most_recent()
+    api.subscribe_market_data(trader.instrument, (trader.get_tick_data, ))
